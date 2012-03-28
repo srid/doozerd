@@ -65,7 +65,13 @@ func (t *txn) get() {
 			return
 		}
 
-		v, rev := g.Get(*t.req.Path)
+		path := *t.req.Path
+		if (path == "/eph"){
+			// /eph is a symlink
+			path = t.c.eph_node
+		}
+
+		v, rev := g.Get(path)
 		if rev == store.Dir {
 			t.respondErrCode(response_ISDIR)
 			return
@@ -96,7 +102,13 @@ func (t *txn) set() {
 	}
 
 	go func() {
-		ev := consensus.Set(t.c.p, *t.req.Path, t.req.Value, *t.req.Rev)
+		path := *t.req.Path
+		if (path == "/eph"){
+			// /eph is a symlink
+			path = t.c.eph_node
+		}
+		
+		ev := consensus.Set(t.c.p, path, t.req.Value, *t.req.Rev)
 		if ev.Err != nil {
 			t.respondOsError(ev.Err)
 			return

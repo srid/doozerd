@@ -14,6 +14,7 @@ type conn struct {
 	c        io.ReadWriter
 	wl       sync.Mutex // write lock
 	addr     string
+	eph_node string
 	p        consensus.Proposer
 	st       *store.Store
 	canWrite bool
