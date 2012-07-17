@@ -33,6 +33,7 @@ var (
 	waddr       = flag.String("w", "", "web listen addr (default: see below)")
 	name        = flag.String("c", "local", "The non-empty cluster name.")
 	showVersion = flag.Bool("v", false, "print doozerd's version string")
+	quiet       = flag.Bool("q", false, "do not log much on console")
 	pi          = flag.Float64("pulse", 1, "how often (in seconds) to set applied key")
 	fd          = flag.Float64("fill", .1, "delay (in seconds) to fill unowned seqns")
 	kt          = flag.Float64("timeout", 60, "timeout (in seconds) to kick inactive nodes")
@@ -80,6 +81,13 @@ func main() {
 
 	log.SetPrefix("DOOZER ")
 	log.SetFlags(log.Ldate | log.Lmicroseconds)
+	if *quiet {
+		devnull, err := os.OpenFile(os.DevNull, 0, 0)
+		if err != nil {
+			panic(err)
+		}
+		log.SetOutput(devnull)
+	}
 
 	tsock, err := net.Listen("tcp", *laddr)
 	if err != nil {
