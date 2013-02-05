@@ -18,7 +18,7 @@ import (
 
 const (
 	alpha     = 50
-	maxUDPLen = 3000
+	maxUDPLen = 4000
 )
 
 const calDir = "/ctl/cal"
